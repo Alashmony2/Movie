@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-import Search from './components/search.jsx'
-
+import Search from './components/Search.jsx'
 function App() {
 
   const [searchTerm, setSearchTerm] = useState('')
