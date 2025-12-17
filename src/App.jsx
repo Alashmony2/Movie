@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Search from './components/Search.jsx'
+import Spinner from './components/Spinner.jsx';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -18,6 +19,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const fetchMovies = async () => {
     try {
+      setIsLoading(true);
+      setErrorMessage('');
       const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
       const response = await fetch(endpoint, API_OPTIONS);
       if (!response.ok) {
@@ -36,6 +39,8 @@ function App() {
     } catch (error) {
       console.log(error);
       setErrorMessage("Error fetching movies . please try again later .");
+    } finally {
+      setIsLoading(false);
     }
   }
   useEffect(() => {
@@ -53,9 +58,20 @@ function App() {
             <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           </header>
           <section className='all-movies'>
-            <h2>All Movies</h2>
+            <h2 className='mt-[40px]'>All Movies</h2>
 
-            {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
+            {isLoading ? (
+              <Spinner />
+            ) : errorMessage ? (
+              errorMessage && <p className='text-red-500'>{errorMessage}</p>
+            ) : (
+              <ul>
+                {movieList.map((movie)=>(
+                  <p key={movie.id} className='text-white'>{movie.title}</p>
+                ))}
+              </ul>
+            )
+            } 
           </section>
         </div>
       </main>
